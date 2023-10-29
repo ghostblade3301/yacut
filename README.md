@@ -28,18 +28,16 @@ python3 -m venv venv
     ```
     source venv/scripts/activate
     ```
-
-4. Установите зависимости из файла requirements.txt:
-
+4. Обновите пакетный менеджер pip:
 ```
 python3 -m pip install --upgrade pip
 ```
-
+5. Установите зависимости из файла requirements.txt:
 ```
 pip install -r requirements.txt
 ```
 
-5. Создайте репозиторий с бд с помощью команды:
+6. Создайте репозиторий с бд с помощью команды:
 ```
 flask db init
 ```
