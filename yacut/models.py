@@ -3,12 +3,11 @@ from random import choices
 
 from flask import url_for
 
-from settings import (ORIGINAL_LINK_LENGTH, REDIRECT_VIEW,
-                      SHORT_LENGTH, SHORT_REGEX, SHORT_SIZE, SYMBOLS)
-
 from . import db
 from .exceptions import (IncorrectOriginalURLException,
                          IncorrectShortURLException, NonUniqueException)
+from settings import (ORIGINAL_LINK_LENGTH, REDIRECT_VIEW,
+                      SHORT_LENGTH, SHORT_REGEX, SHORT_SIZE, SYMBOLS)
 
 
 SHORT_URL_NAME_ALREADY_EXISTS = 'Предложенный вариант короткой ссылки уже существует.'
@@ -50,22 +49,31 @@ class URLMap(db.Model):
 
     @staticmethod
     def create(original, short=None, is_validate=True):
-        if is_validate:
-            if len(original) > ORIGINAL_LINK_LENGTH:
-                raise IncorrectOriginalURLException(
-                    LIMIT_OF_SYMBOLS.format('Оригинальная')
+        if not is_validate:
+            url_map = URLMap(
+                original=original,
+                short=short or URLMap.create_short()
+            )
+            db.session.add(url_map)
+            db.session.commit()
+            return url_map
+
+        if len(original) > ORIGINAL_LINK_LENGTH:
+            raise IncorrectOriginalURLException(
+                LIMIT_OF_SYMBOLS.format('Оригинальная')
+            )
+
+        if short:
+            if len(short) > SHORT_LENGTH:
+                raise IncorrectShortURLException(
+                    LIMIT_OF_SYMBOLS.format('Короткая')
                 )
-            if short:
-                if len(short) > SHORT_LENGTH:
-                    raise IncorrectShortURLException(
-                        LIMIT_OF_SYMBOLS.format('Короткая')
-                    )
-                if URLMap.get(short):
-                    raise NonUniqueException(
-                        SHORT_URL_NAME_ALREADY_EXISTS.format(short)
-                    )
-                if not SHORT_REGEX.match(short):
-                    raise IncorrectShortURLException(INCORRECT_SYMBOLS_IN_URL)
+            if URLMap.get(short):
+                raise NonUniqueException(
+                    SHORT_URL_NAME_ALREADY_EXISTS.format(short)
+                )
+            if not SHORT_REGEX.match(short):
+                raise IncorrectShortURLException(INCORRECT_SYMBOLS_IN_URL)
 
         url_map = URLMap(
             original=original,

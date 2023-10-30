@@ -1,10 +1,12 @@
 from flask import flash, redirect, render_template, url_for
-from settings import REDIRECT_VIEW
+
 from . import app
-from .exceptions import (IncorrectOriginalURLException, IncorrectShortURLException,
-                         NonUniqueException)
+from .exceptions import (IncorrectOriginalURLException,
+                         IncorrectShortURLException, NonUniqueException)
 from .form import URLForm
 from .models import URLMap
+from settings import REDIRECT_VIEW
+
 
 FLASH_MESSAGE = 'Имя {} уже занято.'
 

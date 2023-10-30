@@ -3,9 +3,8 @@ from wtforms import SubmitField, URLField
 from wtforms.validators import (URL, DataRequired, Length, Optional, Regexp,
                                 ValidationError)
 
-from settings import ORIGINAL_LINK_LENGTH, SHORT_LENGTH, SHORT_REGEX
-
 from .models import URLMap
+from settings import ORIGINAL_LINK_LENGTH, SHORT_LENGTH, SHORT_REGEX
 
 
 CREATE = 'Создать'

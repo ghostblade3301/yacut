@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from flask import jsonify, request
 
 from . import app
@@ -24,14 +26,14 @@ def create_id():
                 data.get('url'),
                 data.get('custom_id'),
             ).to_dict()
-        ), 201
+        ), HTTPStatus.CREATED
     except IncorrectShortURLException:
         raise InvalidAPIUsageError(SHORT_URL_INCORRECT_NAME, 400)
     except NonUniqueException:
         raise InvalidAPIUsageError(
             SHORT_URL_NAME_ALREADY_EXISTS.format(
                 data.get('custom_id')
-            ), 400
+            ), HTTPStatus.BAD_REQUEST
         )
 
 
@@ -39,5 +41,5 @@ def create_id():
 def get_url(short):
     url_map = URLMap.get(short)
     if url_map is None:
-        raise InvalidAPIUsageError(NOT_FOUND_ID, 404)
-    return jsonify({'url': url_map.original}), 200
+        raise InvalidAPIUsageError(NOT_FOUND_ID, HTTPStatus.NOT_FOUND)
+    return jsonify({'url': url_map.original}), HTTPStatus.OK
