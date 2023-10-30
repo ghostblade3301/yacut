@@ -28,7 +28,10 @@ def create_id():
             ).to_dict()
         ), HTTPStatus.CREATED
     except IncorrectShortURLException:
-        raise InvalidAPIUsageError(SHORT_URL_INCORRECT_NAME, 400)
+        raise InvalidAPIUsageError(
+            SHORT_URL_INCORRECT_NAME,
+            HTTPStatus.BAD_REQUEST,
+        )
     except NonUniqueException:
         raise InvalidAPIUsageError(
             SHORT_URL_NAME_ALREADY_EXISTS.format(
